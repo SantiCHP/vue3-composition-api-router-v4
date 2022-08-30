@@ -15,20 +15,25 @@ const back = () => {
 const getData = async () => {
     try {
         const { data } = await axios.get(`https://pokeapi.co/api/v2/pokemon/${route.params.name}`);
-        console.log(data);
         pokemon.value = data;
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        pokemon.value = null;
     }
 }
 
 getData();
-
 </script>
+
 <template>
-    <img :src="pokemon.sprites.front_default" :alt="pokemon.name" width="200"/>
-    <h1>
-        Pokemon name: {{ $route.params.name }}
-    </h1>
+    <div v-if="pokemon">
+        <img
+          :alt="pokemon.name"
+          :src="pokemon.sprites?.front_default"
+          width="200"
+        />
+        <h1>Pokemon name: {{ $route.params.name }}</h1>
+    </div>
+    <h1 v-else>El pokemon indicado no existe</h1>
     <button class="btn btn-outline-primary" @click="back">Volver</button>
 </template>
