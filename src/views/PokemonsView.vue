@@ -9,7 +9,6 @@ getData("https://pokeapi.co/api/v2/pokemon/");
 
 <template>
     <h1>Pokemons</h1>
-    
     <div class="btn-group my-2">
         <button
             :disabled = "!data.previous"
