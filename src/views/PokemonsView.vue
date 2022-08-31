@@ -1,31 +1,59 @@
 <script setup>
-import axios from "axios";
-import { ref } from "vue"
 import { RouterLink } from "vue-router";
+import { useGetData } from "@/composables/getData";
 
-const pokemons = ref([]);
+const { data, getData, loading, error } = useGetData();
 
-const getData = async () => {
-    try {
-        const { data } = await axios.get("https://pokeapi.co/api/v2/pokemon/")
-        pokemons.value = data.results;
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-getData();
+getData("https://pokeapi.co/api/v2/pokemon/");
 </script>
 
 <template>
     <h1>Pokemons</h1>
-    <ul>
-        <li v-for="pokemon in pokemons" :key="pokemon.name">
-            <router-link
-              :to="`/pokemons/${pokemon.name}`"
+    
+    <div class="btn-group my-2">
+        <button
+            :disabled = "!data.previous"
+            class="btn btn-warning"
+            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+            @click="getData(data.previous)"
+        >Previous</button>
+        <button
+            :disabled = "!data.next"
+            class="btn btn-warning ms-2"
+            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+            @click="getData(data.next)"
+        >Next</button>
+    </div>
+    <p v-if="loading">Cargando información...</p>
+    <div class="alert alert-danger mt-2" v-if="error">{{error}}</div>
+    <div v-if="data">
+        <ul class="list-group">
+            <li
+              v-for="pokemon in data.results"
+              :key="pokemon.name"
+              class="list-group-item"
             >
-                {{ pokemon.name }}
-            </router-link>
-        </li>
-    </ul>
+                <router-link
+                :to="`/pokemons/${pokemon.name}`"
+                >
+                    {{ pokemon.name }}
+                </router-link>
+            </li>
+        </ul>
+        <div class="btn-group my-2">
+            <button
+              :disabled = "!data.previous"
+              class="btn btn-warning"
+              style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+              @click="getData(data.previous)"
+            >Previous</button>
+            <button
+              :disabled = "!data.next"
+              class="btn btn-warning ms-2"
+              style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+              @click="getData(data.next)"
+            >Next</button>
+        </div>
+        
+    </div>  
 </template>
